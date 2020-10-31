@@ -1,1 +1,66 @@
-<h1>Hey</h1>
+{% extends "complaint/base_generic.html" %}
+
+{% block content %}
+<div class="d-flex justify-content-between flex-wrap flex-md-nowrap align-items-center pb-2 mb-3 border-bottom">
+    <h1 class="h2">Dashboard</h1>
+    <div class="btn-toolbar mb-2 mb-md-0"></div>
+</div>
+<h1 class="h2">Weekly Report</h1>
+<p>The system has accounted the following:</p>
+<ul>
+    <li><strong>Complaints:</strong> 1769</li>
+    <li><strong>Members:</strong> 1875</li>
+</ul>
+<p>These are the complaints we've received for the last 7 days:</p>
+
+<canvas class="my-4 chartjs-render-monitor" id="myChart" width="1078" height="455" style="display: block; width: 1078px; height: 455px;"></canvas>
+
+{% endblock %}
+
+{% block scripts %}
+{{ block.super }}
+<!-- Graphs -->
+<script src="../static/js/Chart.min.js"></script>
+<script>
+  function formatDate(_date) {
+    let current_datetime = _date
+    let formatted_date = current_datetime.getDate() + "-" + (current_datetime.getMonth() + 1) + "-" + current_datetime.getFullYear()
+    return formatted_date
+  }
+
+  var dateLabel = [,,,,,,];
+  for (let index = 0, order = 6; index < 7; index++, order--) {
+    var currentDate = formatDate(new Date(Date.now() - index * 24 * 60 * 60 * 1000))
+    dateLabel[order] = currentDate
+  }
+
+  var complaints = [67, 74, 76, 88, 59, 81, 64];
+  var ctx = document.getElementById("myChart");
+  var myChart = new Chart(ctx, {
+    type: 'line',
+    data: {
+      labels: dateLabel,
+      datasets: [{
+        data: complaints,
+        lineTension: 0,
+        backgroundColor: 'transparent',
+        borderColor: '#007bff',
+        borderWidth: 4,
+        pointBackgroundColor: '#007bff'
+      }]
+    },
+    options: {
+      scales: {
+        yAxes: [{
+          ticks: {
+            beginAtZero: false
+          }
+        }]
+      },
+      legend: {
+        display: false,
+      }
+    }
+  });
+</script>
+{% endblock %}
